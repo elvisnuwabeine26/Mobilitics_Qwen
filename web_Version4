@@ -1,0 +1,1249 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  BarChart3, 
+  Database, 
+  TrendingUp, 
+  FileText, 
+  Upload, 
+  Link, 
+  Globe, 
+  Mail, 
+  Phone, 
+  MapPin,
+  ChevronRight,
+  CheckCircle,
+  Star,
+  Users,
+  Activity,
+  ArrowRight,
+  BarChart2,
+  LineChart,
+  PieChart,
+  Table,
+  FileSpreadsheet,
+  ExternalLink,
+  File,
+  Eye,
+  Settings
+} from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line, LineChart as RechartsLineChart, PieChart as RechartsPieChart, Pie, Cell, ScatterChart, Scatter, ZAxis } from 'recharts';
+
+const App = () => {
+  const [activeTab, setActiveTab] = useState('services');
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [externalLinks, setExternalLinks] = useState([]);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [visualizationTab, setVisualizationTab] = useState('overview');
+  const [selectedDataset, setSelectedDataset] = useState(null);
+  const [datasets, setDatasets] = useState([]);
+  const [selectedVariables, setSelectedVariables] = useState({});
+  const [importSettings, setImportSettings] = useState({});
+  const fileInputRef = useRef(null);
+
+  // Generate comprehensive sample datasets with 10+ variables
+  useEffect(() => {
+    // Mock datasets with 10+ variables each
+    const mockDataset1 = {
+      id: 'mock1',
+      name: 'Comprehensive Sales Analytics 2024',
+      type: 'mock',
+      headers: ['month', 'revenue', 'profit', 'customers', 'orders', 'conversion_rate', 'avg_order_value', 'marketing_spend', 'roi', 'customer_lifetime_value', 'churn_rate'],
+       [
+        { month: 'Jan', revenue: 120000, profit: 45000, customers: 1200, orders: 1800, conversion_rate: 3.2, avg_order_value: 66.67, marketing_spend: 15000, roi: 7.0, customer_lifetime_value: 320, churn_rate: 2.1 },
+        { month: 'Feb', revenue: 135000, profit: 52000, customers: 1350, orders: 2000, conversion_rate: 3.5, avg_order_value: 67.5, marketing_spend: 18000, roi: 6.5, customer_lifetime_value: 335, churn_rate: 1.9 },
+        { month: 'Mar', revenue: 142000, profit: 58000, customers: 1420, orders: 2100, conversion_rate: 3.8, avg_order_value: 67.62, marketing_spend: 20000, roi: 6.1, customer_lifetime_value: 342, churn_rate: 1.8 },
+        { month: 'Apr', revenue: 156000, profit: 62000, customers: 1560, orders: 2300, conversion_rate: 4.1, avg_order_value: 67.83, marketing_spend: 22000, roi: 6.1, customer_lifetime_value: 356, churn_rate: 1.7 },
+        { month: 'May', revenue: 168000, profit: 68000, customers: 1680, orders: 2500, conversion_rate: 4.3, avg_order_value: 67.2, marketing_spend: 25000, roi: 5.7, customer_lifetime_value: 368, churn_rate: 1.6 },
+        { month: 'Jun', revenue: 175000, profit: 72000, customers: 1750, orders: 2600, conversion_rate: 4.5, avg_order_value: 67.31, marketing_spend: 28000, roi: 5.3, customer_lifetime_value: 375, churn_rate: 1.5 },
+        { month: 'Jul', revenue: 182000, profit: 75000, customers: 1820, orders: 2700, conversion_rate: 4.7, avg_order_value: 67.41, marketing_spend: 30000, roi: 5.1, customer_lifetime_value: 382, churn_rate: 1.4 }
+      ],
+      pieData: [
+        { name: 'Product A', value: 45000 },
+        { name: 'Product B', value: 38000 },
+        { name: 'Product C', value: 32000 },
+        { name: 'Product D', value: 25000 },
+        { name: 'Product E', value: 20000 },
+        { name: 'Product F', value: 15000 }
+      ]
+    };
+
+    const mockDataset2 = {
+      id: 'mock2',
+      name: 'Marketing Performance Dashboard',
+      type: 'mock',
+      headers: ['campaign', 'impressions', 'clicks', 'conversions', 'cost', 'revenue', 'cpa', 'roas', 'ctr', 'engagement_rate', 'bounce_rate', 'time_on_site'],
+       [
+        { campaign: 'Social Media', impressions: 50000, clicks: 5000, conversions: 500, cost: 2500, revenue: 15000, cpa: 5.0, roas: 6.0, ctr: 10.0, engagement_rate: 8.5, bounce_rate: 35.2, time_on_site: 120 },
+        { campaign: 'Email Marketing', impressions: 30000, clicks: 4500, conversions: 675, cost: 1200, revenue: 18000, cpa: 1.78, roas: 15.0, ctr: 15.0, engagement_rate: 12.3, bounce_rate: 28.7, time_on_site: 180 },
+        { campaign: 'Search Ads', impressions: 80000, clicks: 8000, conversions: 800, cost: 4000, revenue: 24000, cpa: 5.0, roas: 6.0, ctr: 10.0, engagement_rate: 9.2, bounce_rate: 42.1, time_on_site: 95 },
+        { campaign: 'Display Ads', impressions: 120000, clicks: 6000, conversions: 300, cost: 3600, revenue: 9000, cpa: 12.0, roas: 2.5, ctr: 5.0, engagement_rate: 6.8, bounce_rate: 58.3, time_on_site: 65 },
+        { campaign: 'Content Marketing', impressions: 25000, clicks: 3750, conversions: 750, cost: 800, revenue: 22500, cpa: 1.07, roas: 28.1, ctr: 15.0, engagement_rate: 18.7, bounce_rate: 22.4, time_on_site: 240 }
+      ],
+      pieData: [
+        { name: 'Social Media', value: 5000 },
+        { name: 'Email', value: 4500 },
+        { name: 'Search', value: 8000 },
+        { name: 'Display', value: 6000 },
+        { name: 'Content', value: 3750 }
+      ]
+    };
+
+    setDatasets([mockDataset1, mockDataset2]);
+    setSelectedDataset('mock1');
+    setSelectedVariables({
+      'mock1': { x: 'month', y1: 'revenue', y2: 'profit' },
+      'mock2': { x: 'campaign', y1: 'revenue', y2: 'cost' }
+    });
+  }, []);
+
+  const services = [
+    {
+      icon: <Database className="w-8 h-8" />,
+      title: "Data Management",
+      description: "Comprehensive data governance, storage, and management solutions tailored to your business needs."
+    },
+    {
+      icon: <BarChart3 className="w-8 h-8" />,
+      title: "Analytics & Insights",
+      description: "Advanced analytics to transform your data into actionable business intelligence."
+    },
+    {
+      icon: <TrendingUp className="w-8 h-8" />,
+      title: "Data Visualization",
+      description: "Interactive dashboards and visualizations that make complex data easy to understand."
+    },
+    {
+      icon: <FileText className="w-8 h-8" />,
+      title: "Tax Consulting",
+      description: "Expert tax advisory services to ensure compliance and optimize your tax position."
+    }
+  ];
+
+  const stats = [
+    { value: "50+", label: "Clients Served", icon: Users },
+    { value: "98%", label: "Client Satisfaction", icon: Star },
+    { value: "200+", label: "Projects Completed", icon: Activity },
+    { value: "5", label: "Years Experience", icon: TrendingUp }
+  ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#A4DE83', '#FFB300', '#FF7F50', '#D8BFD8'];
+
+  const parseCSV = (csvText, useFirstRowAsHeaders = true) => {
+    const lines = csvText.trim().split('\n');
+    if (lines.length === 0) return { headers: [], data: [] };
+    
+    if (useFirstRowAsHeaders) {
+      const headers = lines[0].split(',').map(h => h.trim().replace(/["']/g, ''));
+      const data = lines.slice(1).map(line => {
+        const values = line.split(',').map(v => v.trim().replace(/["']/g, ''));
+        const row = {};
+        headers.forEach((header, index) => {
+          if (index < values.length) {
+            // Try to parse as number if possible
+            const value = values[index];
+            if (value === '') {
+              row[header] = null;
+            } else if (!isNaN(value) && value !== '') {
+              row[header] = parseFloat(value);
+            } else {
+              row[header] = value;
+            }
+          } else {
+            row[header] = null;
+          }
+        });
+        return row;
+      });
+      return { headers, data };
+    } else {
+      // Generate generic headers
+      const firstLineValues = lines[0].split(',').map(v => v.trim().replace(/["']/g, ''));
+      const headers = firstLineValues.map((_, index) => `column_${index + 1}`);
+      const data = lines.map(line => {
+        const values = line.split(',').map(v => v.trim().replace(/["']/g, ''));
+        const row = {};
+        headers.forEach((header, index) => {
+          if (index < values.length) {
+            const value = values[index];
+            if (value === '') {
+              row[header] = null;
+            } else if (!isNaN(value) && value !== '') {
+              row[header] = parseFloat(value);
+            } else {
+              row[header] = value;
+            }
+          } else {
+            row[header] = null;
+          }
+        });
+        return row;
+      });
+      return { headers, data };
+    }
+  };
+
+  const parseJSON = (jsonText) => {
+    try {
+      const jsonData = JSON.parse(jsonText);
+      if (Array.isArray(jsonData) && jsonData.length > 0) {
+        const headers = Object.keys(jsonData[0]);
+        return { headers,  jsonData };
+      } else if (typeof jsonData === 'object' && !Array.isArray(jsonData)) {
+        // Handle object with array properties
+        const arrayKeys = Object.keys(jsonData).filter(key => Array.isArray(jsonData[key]));
+        if (arrayKeys.length > 0) {
+          const firstArray = jsonData[arrayKeys[0]];
+          if (firstArray.length > 0 && typeof firstArray[0] === 'object') {
+            const headers = Object.keys(firstArray[0]);
+            return { headers,  firstArray };
+          }
+        }
+      }
+      return { headers: [],  [] };
+    } catch (error) {
+      console.error('JSON parsing error:', error);
+      return { headers: [],  [] };
+    }
+  };
+
+  const handleFileUpload = (event) => {
+    const files = Array.Array.from(event.target.files);
+    const newFiles = files.map(file => ({
+      id: Date.now() + Math.random(),
+      name: file.name,
+      size: file.size,
+      type: file.type
+    }));
+    setUploadedFiles(prev => [...prev, ...newFiles]);
+    
+    // Process each uploaded file
+    const newDatasets = [];
+    const newImportSettings = { ...importSettings };
+    
+    files.forEach((file, fileIndex) => {
+      const fileId = Date.now() + fileIndex;
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        let parsedData = { headers: [],  [] };
+        const fileContent = e.target.result;
+        
+        // Default to using first row as headers
+        const useFirstRowAsHeaders = true;
+        newImportSettings[`file_${fileId}`] = { useFirstRowAsHeaders };
+        
+        if (file.type === 'application/json' || file.name.endsWith('.json')) {
+          parsedData = parseJSON(fileContent);
+        } else {
+          // Handle CSV and Excel (treat as CSV for demo)
+          parsedData = parseCSV(fileContent, useFirstRowAsHeaders);
+        }
+        
+        // Create dataset with parsed data
+        const dataset = {
+          id: `file_${fileId}`,
+          name: file.name.replace(/\.[^/.]+$/, ""),
+          type: 'uploaded',
+          headers: parsedData.headers,
+           parsedData.data,
+          pieData: parsedData.headers.length > 1 && parsedData.data.length > 0 
+            ? [
+                { name: parsedData.headers[0], value: parsedData.data.reduce((sum, row) => sum + (typeof row[parsedData.headers[1]] === 'number' ? row[parsedData.headers[1]] : 0), 0) },
+                { name: 'Other', value: parsedData.data.reduce((sum, row) => sum + (typeof row[parsedData.headers[0]] === 'number' ? row[parsedData.headers[0]] : 0), 0) }
+              ]
+            : [
+                { name: 'Category A', value: Math.floor(Math.random() * 400) + 100 },
+                { name: 'Category B', value: Math.floor(Math.random() * 400) + 100 },
+                { name: 'Category C', value: Math.floor(Math.random() * 400) + 100 },
+                { name: 'Category D', value: Math.floor(Math.random() * 400) + 100 },
+                { name: 'Category E', value: Math.floor(Math.random() * 400) + 100 },
+                { name: 'Category F', value: Math.floor(Math.random() * 400) + 100 }
+              ]
+        };
+        
+        newDatasets.push(dataset);
+        
+        // Update state when all files are processed
+        if (newDatasets.length === files.length) {
+          setDatasets(prev => [...prev, ...newDatasets]);
+          setImportSettings(newImportSettings);
+          
+          // Initialize selected variables for new datasets
+          const newSelectedVariables = { ...selectedVariables };
+          newDatasets.forEach(dataset => {
+            newSelectedVariables[dataset.id] = {
+              x: dataset.headers[0] || 'column_1',
+              y1: dataset.headers[1] || 'column_2',
+              y2: dataset.headers[2] || 'column_3'
+            };
+          });
+          setSelectedVariables(newSelectedVariables);
+          
+          // Switch to visualization tab and select the first newly uploaded dataset
+          if (newDatasets.length > 0) {
+            setActiveTab('visualization');
+            setVisualizationTab('charts');
+            setSelectedDataset(newDatasets[0].id);
+          }
+        }
+      };
+      
+      if (file.type === 'application/json' || file.name.endsWith('.json')) {
+        reader.readAsText(file);
+      } else {
+        // For CSV and Excel files
+        reader.readAsText(file);
+      }
+    });
+  };
+
+  const handleLinkSubmit = (e) => {
+    e.preventDefault();
+    const linkInput = e.target.elements.link.value;
+    if (linkInput) {
+      setExternalLinks(prev => [...prev, {
+        id: Date.now(),
+        url: linkInput,
+        title: `External Link ${externalLinks.length + 1}`
+      }]);
+      e.target.reset();
+      
+      // Create mock dataset for external link with 10+ variables
+      const headers = ['period', 'api_calls', 'active_users', 'revenue', 'costs', 'profit', 'growth_rate', 'retention', 'acquisition_cost', 'lifetime_value', 'satisfaction_score', 'support_tickets'];
+      const linkDataset = {
+        id: `link_${Date.now()}`,
+        name: `External Data ${externalLinks.length + 1}`,
+        type: 'external',
+        headers: headers,
+         [
+          { period: 'Q1', api_calls: 120000, active_users: 8000, revenue: 250000, costs: 120000, profit: 130000, growth_rate: 12.5, retention: 85.2, acquisition_cost: 45.6, lifetime_value: 320, satisfaction_score: 4.2, support_tickets: 150 },
+          { period: 'Q2', api_calls: 150000, active_users: 9500, revenue: 280000, costs: 135000, profit: 145000, growth_rate: 15.2, retention: 87.8, acquisition_cost: 42.3, lifetime_value: 335, satisfaction_score: 4.4, support_tickets: 120 },
+          { period: 'Q3', api_calls: 180000, active_users: 12000, revenue: 320000, costs: 150000, profit: 170000, growth_rate: 18.7, retention: 89.5, acquisition_cost: 38.9, lifetime_value: 350, satisfaction_score: 4.6, support_tickets: 95 },
+          { period: 'Q4', api_calls: 210000, active_users: 14000, revenue: 380000, costs: 175000, profit: 205000, growth_rate: 22.1, retention: 91.2, acquisition_cost: 35.4, lifetime_value: 365, satisfaction_score: 4.8, support_tickets: 75 }
+        ],
+        pieData: [
+          { name: 'Mobile', value: 4500 },
+          { name: 'Desktop', value: 3500 },
+          { name: 'Tablet', value: 2000 },
+          { name: 'Web', value: 1800 },
+          { name: 'API', value: 1200 },
+          { name: 'Other', value: 800 }
+        ]
+      };
+      
+      setDatasets(prev => [...prev, linkDataset]);
+      setSelectedVariables(prev => ({
+        ...prev,
+        [linkDataset.id]: {
+          x: 'period',
+          y1: 'revenue',
+          y2: 'profit'
+        }
+      }));
+      
+      setActiveTab('visualization');
+      setVisualizationTab('overview');
+      setSelectedDataset(linkDataset.id);
+    }
+  };
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    alert('Thank you for your message! We will get back to you soon.');
+    setFormData({ name: '', email: '', message: '' });
+  };
+
+  const getCurrentDataset = () => {
+    return datasets.find(dataset => dataset.id === selectedDataset) || datasets[0];
+  };
+
+  const handleVariableChange = (variableType, value) => {
+    const currentDataset = getCurrentDataset();
+    if (!currentDataset) return;
+    
+    setSelectedVariables(prev => ({
+      ...prev,
+      [currentDataset.id]: {
+        ...prev[currentDataset.id],
+        [variableType]: value
+      }
+    }));
+  };
+
+  const toggleImportSetting = (datasetId) => {
+    const currentSetting = importSettings[datasetId]?.useFirstRowAsHeaders ?? true;
+    const newSetting = !currentSetting;
+    
+    setImportSettings(prev => ({
+      ...prev,
+      [datasetId]: { useFirstRowAsHeaders: newSetting }
+    }));
+    
+    // Re-process the dataset if it's an uploaded file
+    const dataset = datasets.find(d => d.id === datasetId);
+    if (dataset && dataset.type === 'uploaded') {
+      // In a real implementation, you would re-parse the original file
+      // For this demo, we'll just show a message
+      alert('Dataset reprocessing would occur in a real implementation. The import setting has been updated.');
+    }
+  };
+
+  const renderVisualizationContent = () => {
+    const currentDataset = getCurrentDataset();
+    if (!currentDataset) return null;
+    
+    const currentVars = selectedVariables[currentDataset.id] || { x: currentDataset.headers[0], y1: currentDataset.headers[1], y2: currentDataset.headers[2] };
+
+    if (visualizationTab === 'overview') {
+      return (
+        <div className="space-y-6">
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+            <h3 className="text-lg font-semibold text-blue-800">Data Portal Overview</h3>
+            <p className="text-blue-700">
+              Welcome to your interactive data portal. Upload files or add external links to generate 
+              real-time visualizations with support for 10+ variables.
+            </p>
+          </div>
+          
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <div className="flex justify-between items-start mb-4">
+              <h4 className="text-lg font-semibold">Dataset Information</h4>
+              {currentDataset.type === 'uploaded' && (
+                <button
+                  onClick={() => toggleImportSetting(currentDataset.id)}
+                  className="flex items-center text-sm text-blue-600 hover:text-blue-800"
+                >
+                  <Settings className="w-4 h-4 mr-1" />
+                  Import Settings
+                </button>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <span className="text-sm text-gray-500">Dataset Name</span>
+                <p className="font-medium">{currentDataset.name}</p>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">Data Type</span>
+                <p className="font-medium capitalize">{currentDataset.type}</p>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">Variables</span>
+                <p className="font-medium">{currentDataset.headers.length} variables</p>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">Records</span>
+                <p className="font-medium">{currentDataset.data.length} records</p>
+              </div>
+              {currentDataset.type === 'uploaded' && (
+                <div className="md:col-span-2 lg:col-span-3">
+                  <span className="text-sm text-gray-500">Import Setting</span>
+                  <p className="font-medium">
+                    First row treated as {' '}
+                    <span className={importSettings[currentDataset.id]?.useFirstRowAsHeaders ? 'text-green-600' : 'text-red-600'}>
+                      {importSettings[currentDataset.id]?.useFirstRowAsHeaders ? 'variable names' : 'data'}
+                    </span>
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-6">
+              <h5 className="font-semibold mb-2">Available Variables:</h5>
+              <div className="flex flex-wrap gap-2">
+                {currentDataset.headers.map((header, index) => (
+                  <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">
+                    {header}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    if (visualizationTab === 'charts') {
+      return (
+        <div className="space-y-8">
+          {/* Variable Selection Controls */}
+          <div className="bg-white p-4 rounded-xl shadow-sm border">
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="font-semibold">Select Variables for Visualization</h4>
+              {currentDataset.type === 'uploaded' && (
+                <button
+                  onClick={() => toggleImportSetting(currentDataset.id)}
+                  className="flex items-center text-xs text-blue-600 hover:text-blue-800"
+                >
+                  <Settings className="w-3 h-3 mr-1" />
+                  Edit Import Settings
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">X-Axis Variable</label>
+                <select
+                  value={currentVars.x}
+                  onChange={(e) => handleVariableChange('x', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  {currentDataset.headers.map((header, index) => (
+                    <option key={index} value={header}>{header}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Y-Axis Variable 1</label>
+                <select
+                  value={currentVars.y1}
+                  onChange={(e) => handleVariableChange('y1', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  {currentDataset.headers.filter(h => h !== currentVars.x).map((header, index) => (
+                    <option key={index} value={header}>{header}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Y-Axis Variable 2</label>
+                <select
+                  value={currentVars.y2}
+                  onChange={(e) => handleVariableChange('y2', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                >
+                  {currentDataset.headers.filter(h => h !== currentVars.x && h !== currentVars.y1).map((header, index) => (
+                    <option key={index} value={header}>{header}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          {/* Line Chart */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <LineChart className="w-5 h-5 mr-2" />
+              Trend Analysis: {currentVars.y1} & {currentVars.y2} vs {currentVars.x}
+            </h3>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsLineChart data={currentDataset.data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey={currentVars.x} 
+                    label={{ value: currentVars.x, position: 'insideBottom', offset: -5 }} 
+                  />
+                  <YAxis 
+                    label={{ value: 'Values', angle: -90, position: 'insideLeft' }} 
+                  />
+                  <Tooltip 
+                    formatter={(value, name) => [value.toLocaleString(), name]}
+                    labelFormatter={(label) => `${currentVars.x}: ${label}`}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey={currentVars.y1} 
+                    stroke="#8884d8" 
+                    activeDot={{ r: 8 }} 
+                    name={currentVars.y1}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey={currentVars.y2} 
+                    stroke="#82ca9d" 
+                    name={currentVars.y2}
+                  />
+                </RechartsLineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          {/* Bar Chart */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Comparison: {currentVars.y1} & {currentVars.y2} by {currentVars.x}
+            </h3>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={currentDataset.data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey={currentVars.x} 
+                    label={{ value: currentVars.x, position: 'insideBottom', offset: -5 }} 
+                  />
+                  <YAxis 
+                    label={{ value: 'Values', angle: -90, position: 'insideLeft' }} 
+                  />
+                  <Tooltip 
+                    formatter={(value, name) => [value.toLocaleString(), name]}
+                    labelFormatter={(label) => `${currentVars.x}: ${label}`}
+                  />
+                  <Legend />
+                  <Bar dataKey={currentVars.y1} fill="#3B82F6" name={currentVars.y1} />
+                  <Bar dataKey={currentVars.y2} fill="#10B981" name={currentVars.y2} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          {/* Scatter Plot - Using first 3 numeric variables */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <BarChart2 className="w-5 h-5 mr-2" />
+              Correlation Analysis
+            </h3>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <ScatterChart>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    type="number" 
+                    dataKey={currentVars.y1} 
+                    name={currentVars.y1}
+                    label={{ value: currentVars.y1, position: 'insideBottom', offset: -5 }} 
+                  />
+                  <YAxis 
+                    type="number" 
+                    dataKey={currentVars.y2} 
+                    name={currentVars.y2}
+                    label={{ value: currentVars.y2, angle: -90, position: 'insideLeft' }} 
+                  />
+                  <ZAxis type="number" dataKey={currentVars.x} range={[100, 500]} />
+                  <Tooltip 
+                    formatter={(value, name) => [value.toLocaleString(), name]}
+                  />
+                  <Legend />
+                  <Scatter name={`${currentVars.y1} vs ${currentVars.y2}`} data={currentDataset.data} fill="#8884d8" />
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          {/* Pie Chart for first categorical variable vs first numeric */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <PieChart className="w-5 h-5 mr-2" />
+              Distribution: {currentVars.x} vs {currentVars.y1}
+            </h3>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
+                  <Pie
+                    data={currentDataset.data.map(item => ({
+                      name: item[currentVars.x],
+                      value: item[currentVars.y1]
+                    }))}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
+                  >
+                    {currentDataset.data.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value) => [value.toLocaleString(), 'Value']} />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    if (visualizationTab === 'tables') {
+      return (
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="p-6 border-b">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="text-lg font-semibold flex items-center">
+                <Table className="w-5 h-5 mr-2" />
+                {currentDataset.name} - Complete Data Table
+              </h3>
+              {currentDataset.type === 'uploaded' && (
+                <button
+                  onClick={() => toggleImportSetting(currentDataset.id)}
+                  className="flex items-center text-sm text-blue-600 hover:text-blue-800 mt-2 sm:mt-0"
+                >
+                  <Settings className="w-4 h-4 mr-1" />
+                  Import Settings
+                </button>
+              )}
+            </div>
+            <p className="text-sm text-gray-600 mt-2">
+              {currentDataset.headers.length} variables × {currentDataset.data.length} records
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 sticky top-0">
+                <tr>
+                  {currentDataset.headers.map((header, index) => (
+                    <th key={index} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      {header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {currentDataset.data.map((row, rowIndex) => (
+                  <tr key={rowIndex} className="hover:bg-gray-50">
+                    {Object.values(row).map((value, colIndex) => (
+                      <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {typeof value === 'number' ? value.toLocaleString(undefined, { 
+                          minimumFractionDigits: 0, 
+                          maximumFractionDigits: value % 1 === 0 ? 0 : 2 
+                        }) : value?.toString() || 'null'}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="p-4 bg-gray-50 border-t text-sm text-gray-600">
+            Showing {currentDataset.data.length} rows with {currentDataset.headers.length} columns
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <h1 className="text-2xl font-bold text-blue-600">Mobilitics</h1>
+              </div>
+              <div className="hidden md:block ml-10">
+                <div className="flex space-x-4">
+                  {['Home', 'Services', 'About', 'Contact'].map((item) => (
+                    <a
+                      key={item}
+                      href={`#${item.toLowerCase()}`}
+                      className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      {item}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <button 
+                onClick={() => setActiveTab('visualization')}
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Data Portal
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                Data-Driven Solutions for Your Business
+              </h1>
+              <p className="text-xl mb-8 text-blue-100">
+                Mobilitics Consulting Limited delivers expert data management, analytics, visualization, and tax consulting services in Uganda.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}
+                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center"
+                >
+                  Our Services <ArrowRight className="ml-2 w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => setActiveTab('visualization')}
+                  className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                >
+                  Data Portal
+                </button>
+              </div>
+            </div>
+            <div className="mt-10 lg:mt-0 flex justify-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-md">
+                <h3 className="text-xl font-semibold mb-4">Quick Stats</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {stats.map((stat, index) => (
+                    <div key={index} className="text-center">
+                      <div className="text-2xl font-bold">{stat.value}</div>
+                      <div className="text-sm text-blue-200">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Services</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We provide comprehensive consulting services to help your business thrive in the data-driven world.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {services.map((service, index) => (
+              <div key={index} className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-600 mb-4">{service.icon}</div>
+                <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
+                <p className="text-gray-600">{service.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Data Portal */}
+      <section className="py-20 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Interactive Data Portal</h2>
+            <p className="text-xl text-gray-600">
+              Upload your data files or add external links to generate real-time visualizations with support for 10+ variables.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            {/* Main Navigation Tabs */}
+            <div className="flex flex-wrap gap-2 p-6 border-b">
+              <button
+                onClick={() => setActiveTab('upload')}
+                className={`px-4 py-2 rounded-lg font-medium flex items-center ${
+                  activeTab === 'upload'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Upload Data
+              </button>
+              <button
+                onClick={() => setActiveTab('links')}
+                className={`px-4 py-2 rounded-lg font-medium flex items-center ${
+                  activeTab === 'links'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <Link className="w-4 h-4 mr-2" />
+                External Links
+              </button>
+              <button
+                onClick={() => setActiveTab('visualization')}
+                className={`px-4 py-2 rounded-lg font-medium flex items-center ${
+                  activeTab === 'visualization'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Visualizations
+              </button>
+            </div>
+
+            {/* Upload Tab */}
+            {activeTab === 'upload' && (
+              <div className="p-6 space-y-6">
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Upload Your Data Files</h3>
+                  <p className="text-gray-600 mb-4">Supported formats: CSV, Excel (.xlsx, .xls), JSON (Supports 10+ variables)</p>
+                  <div className="text-sm text-gray-500 mb-4">
+                    <strong>Import Setting:</strong> First row will be automatically treated as variable names
+                  </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    accept=".csv,.xlsx,.xls,.json"
+                    multiple
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Choose Files
+                  </button>
+                </div>
+
+                {uploadedFiles.length > 0 && (
+                  <div className="mt-8">
+                    <h4 className="text-lg font-semibold mb-4 flex items-center">
+                      <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                      Successfully Uploaded Files
+                    </h4>
+                    <div className="space-y-3">
+                      {uploadedFiles.map((file) => (
+                        <div key={file.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                          <div className="flex items-center">
+                            <FileSpreadsheet className="w-5 h-5 text-blue-500 mr-3" />
+                            <span className="font-medium">{file.name}</span>
+                            <span className="text-sm text-gray-500 ml-2">
+                              ({(file.size / 1024).toFixed(1)} KB)
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-green-600 text-sm">✓ Processed</span>
+                            <button 
+                              onClick={() => {
+                                const datasetId = `file_${file.id}`;
+                                const dataset = datasets.find(d => d.id === datasetId);
+                                if (dataset) {
+                                  setSelectedDataset(datasetId);
+                                  setActiveTab('visualization');
+                                  setVisualizationTab('charts');
+                                }
+                              }}
+                              className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Links Tab */}
+            {activeTab === 'links' && (
+              <div className="p-6 space-y-6">
+                <form onSubmit={handleLinkSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Add External Data Link
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        name="link"
+                        placeholder="https://example.com/your-data-endpoint"
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                      >
+                        <Link className="w-4 h-4 mr-2" />
+                        Add Link
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Add URLs to JSON APIs, CSV files, or any web-accessible data source with 10+ variables
+                    </p>
+                  </div>
+                </form>
+
+                {externalLinks.length > 0 && (
+                  <div className="mt-8">
+                    <h4 className="text-lg font-semibold mb-4 flex items-center">
+                      <ExternalLink className="w-5 h-5 text-purple-500 mr-2" />
+                      External Data Sources
+                    </h4>
+                    <div className="space-y-3">
+                      {externalLinks.map((link) => (
+                        <div key={link.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                          <div className="flex items-center">
+                            <ExternalLink className="w-5 h-5 text-purple-500 mr-3" />
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 font-medium truncate"
+                            >
+                              {link.title}
+                            </a>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-green-600 text-sm">✓ Connected</span>
+                            <button 
+                              onClick={() => {
+                                const datasetId = `link_${link.id}`;
+                                const dataset = datasets.find(d => d.id === datasetId);
+                                if (dataset) {
+                                  setSelectedDataset(datasetId);
+                                  setActiveTab('visualization');
+                                  setVisualizationTab('charts');
+                                }
+                              }}
+                              className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Visualization Tab */}
+            {activeTab === 'visualization' && (
+              <div className="p-6">
+                {datasets.length === 0 ? (
+                  <div className="text-center py-12">
+                    <BarChart3 className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Welcome to Your Data Portal</h3>
+                    <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+                      Upload data files or add external links to start generating visualizations. 
+                      Your data will be automatically processed and displayed with support for 10+ variables.
+                    </p>
+                    <div className="flex justify-center space-x-4">
+                      <button
+                        onClick={() => setActiveTab('upload')}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload Data
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('links')}
+                        className="border border-blue-600 text-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors flex items-center"
+                      >
+                        <Link className="w-4 h-4 mr-2" />
+                        Add Link
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Dataset Selection */}
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Select Dataset to Visualize
+                      </label>
+                      <select
+                        value={selectedDataset || ''}
+                        onChange={(e) => setSelectedDataset(e.target.value)}
+                        className="w-full md:w-80 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        {datasets.map((dataset) => (
+                          <option key={dataset.id} value={dataset.id}>
+                            {dataset.name} {dataset.type === 'uploaded' ? '(Uploaded)' : dataset.type === 'external' ? '(External)' : '(Sample)'}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    {/* Visualization Sub-tabs */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      <button
+                        onClick={() => setVisualizationTab('overview')}
+                        className={`px-4 py-2 rounded-lg font-medium ${
+                          visualizationTab === 'overview'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Overview
+                      </button>
+                      <button
+                        onClick={() => setVisualizationTab('charts')}
+                        className={`px-4 py-2 rounded-lg font-medium ${
+                          visualizationTab === 'charts'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Charts & Graphs
+                      </button>
+                      <button
+                        onClick={() => setVisualizationTab('tables')}
+                        className={`px-4 py-2 rounded-lg font-medium ${
+                          visualizationTab === 'tables'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        Data Tables
+                      </button>
+                    </div>
+                    
+                    {/* Visualization Content */}
+                    {renderVisualizationContent()}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">About Mobilitics Consulting</h2>
+              <p className="text-lg text-gray-600 mb-6">
+                Founded in Uganda, Mobilitics Consulting Limited specializes in providing 
+                cutting-edge data management and tax consulting services to businesses across 
+                East Africa and beyond.
+              </p>
+              <p className="text-lg text-gray-600 mb-6">
+                Our team of experts combines deep technical knowledge with practical business 
+                acumen to deliver solutions that drive real results for our clients.
+              </p>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <Globe className="w-5 h-5 text-blue-600 mr-2" />
+                  <span className="text-gray-700">Based in Kampala, Uganda</span>
+                </div>
+                <div className="flex items-center">
+                  <Users className="w-5 h-5 text-blue-600 mr-2" />
+                  <span className="text-gray-700">Expert Team</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-10 lg:mt-0">
+              <img
+                src="https://placehold.co/600x400/3B82F6/FFFFFF?text=Uganda+Office"
+                alt="Mobilitics Consulting Office"
+                className="rounded-2xl shadow-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Get In Touch</h2>
+            <p className="text-xl text-gray-300">
+              Ready to transform your business with data-driven insights?
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <MapPin className="w-5 h-5 text-blue-400 mr-3" />
+                  <span>Kampala, Uganda</span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-5 h-5 text-blue-400 mr-3" />
+                  <span>+256 XXX XXX XXX</span>
+                </div>
+                <div className="flex items-center">
+                  <Mail className="w-5 h-5 text-blue-400 mr-3" />
+                  <span>info@mobilitics.co.ug</span>
+                </div>
+                <div className="flex items-center">
+                  <Globe className="w-5 h-5 text-blue-400 mr-3" />
+                  <span>www.mobilitics.co.ug</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold mb-6">Send us a Message</h3>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    placeholder="Your Email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <textarea
+                    placeholder="Your Message"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    rows="4"
+                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors w-full"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <h3 className="text-xl font-bold">Mobilitics Consulting Limited</h3>
+              <p className="text-gray-400">Data Management & Tax Consulting Experts</p>
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                Terms of Service
+              </a>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+            <p>&copy; 2025 Mobilitics Consulting Limited. All rights reserved.</p>
+            <p className="text-sm mt-2">Repository: <a href="https://github.com/elvisnuwabeine26/Mobilitics_Qwen" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">github.com/elvisnuwabeine26/Mobilitics_Qwen</a></p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
